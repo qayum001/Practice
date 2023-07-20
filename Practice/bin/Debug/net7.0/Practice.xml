@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Practice</name>
+    </assembly>
+    <members>
+        <member name="M:Practice.Controllers.UserController.Register(Practice.Data.Dto.UserRegisterDto)">
+            <summary>
+            Register new user
+            </summary>
+            <param name="userRegisterDto"></param>
+            <returns>A string token</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.Login(Practice.Data.Dto.LoginCredentials)">
+            <summary>
+            Log in to the system
+            </summary>
+            <param name="loginCredentials"></param>
+            <returns>A string token</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Email or password is incorrect</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.Logout">
+            <summary>
+            Log out system user
+            </summary>
+            <returns>Response</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.GetProfile">
+            <summary>
+            Get profile
+            </summary>
+            <returns>Response</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.EditProfile(Practice.Data.Dto.EditUserDto)">
+            <summary>
+            Edit profile
+            </summary>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="T:Practice.Migrations.init">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Practice.Migrations.update001">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.update001.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.update001.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.update001.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Practice.Migrations.InitToken">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.InitToken.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.InitToken.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.InitToken.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
