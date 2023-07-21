@@ -11,10 +11,18 @@ namespace Practice.Controllers
         public AuthorController() { }
 
         [HttpGet("list")]
-        public async Task AuthorsList()
-        {
+        public async Task AuthorsList() { }
 
-        }
+        [HttpGet("{id}")]
+        public async Task GetConcreteAuthor() { }
 
+        [HttpPost("post")]
+        public async Task CreatePost() { }
+
+        [HttpPut("post")]
+        public async Task EditePost() { }
+
+        [HttpDelete("post")]
+        public async Task DeletePost() { }
     }
 }

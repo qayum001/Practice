@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Practice.Controllers
 {
@@ -14,13 +13,13 @@ namespace Practice.Controllers
         [HttpGet]
         public async Task GetPostsList() { }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id}")]
         public async Task GetConcretePost(Guid id) { }
 
-        [HttpPost("{id:guid}/like")]
+        [HttpPost("{id}/like")]
         public async Task Like(Guid id) { }
 
-        [HttpDelete("{id:guid}/like")]
+        [HttpDelete("{id}/like")]
         public async Task Unlike(Guid id) { }
     }
 }
