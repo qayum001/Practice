@@ -10,6 +10,7 @@ using Practice.Services.GenerateTokenService;
 using Practice.Services.CheckerService.ILoginCheckerService;
 using Practice.Services.TokenService;
 using Practice.Services.UserService;
+using Practice.Services.TagService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,7 @@ builder.Services.AddScoped<IRegisterCheckerService, RegisterCheckerService>();
 builder.Services.AddScoped<ILoginCheckService, LoginCheckService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITagService, TagService>();
 #endregion
 
 //jwt bearer

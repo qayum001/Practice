@@ -1,12 +1,10 @@
-﻿using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Practice.Data.Dto;
 using Practice.Services.AuthService;
 using Practice.Services.CheckerService;
 using Practice.Services.CheckerService.ILoginCheckerService;
 using Practice.Data.Model;
 using Microsoft.AspNetCore.Authorization;
-using System.Runtime.CompilerServices;
 using Practice.Services.TokenService;
 using Practice.Services.UserService;
 
