@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Practice.Data.Dto;
+using Practice.Services.PostService;
 
 namespace Practice.Controllers
 {
@@ -8,10 +10,19 @@ namespace Practice.Controllers
 
     public class PostController : ControllerBase
     {
-        public PostController() { }
+        private readonly IPostService _postService;
+        public PostController(IPostService postService) 
+        { 
+            _postService = postService;
+        }
 
         [HttpGet]
-        public async Task GetPostsList() { }
+        public async Task<ActionResult<List<PostDto>>> GetPostsList() 
+        {
+            var res = await _postService.GetPostDtoList();
+
+            return Ok(res);
+        }
 
         [HttpGet("{id}")]
         public async Task GetConcretePost(Guid id) { }

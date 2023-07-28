@@ -12,6 +12,7 @@
         public string Password { get; set; }
 
         //Post
+        public bool IsAuthor { get; set; } = false;
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         //Like
         public ICollection<Like> Likes { get; set; } = new List<Like>();
