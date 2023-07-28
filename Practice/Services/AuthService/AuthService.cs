@@ -4,23 +4,22 @@ using Practice.Data.Dto;
 using Practice.Data.Model;
 using Practice.Services.GenerateTokenService;
 using Practice.Services.TokenService;
+using Practice.Services.UserService;
 
 namespace Practice.Services.AuthService
 {
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration;
         private readonly IGenerateJwt _generateJwt;
         private readonly ITokenService _tokenService;
 
         public AuthService(AppDbContext context,
-            IConfiguration configuration,
+            IUserService userService,
             IGenerateJwt generateJwt,
             ITokenService tokenService)
         {
             _context = context;
-            _configuration = configuration;
             _generateJwt = generateJwt;
             _tokenService = tokenService;
         }

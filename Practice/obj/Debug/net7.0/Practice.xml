@@ -4,6 +4,58 @@
         <name>Practice</name>
     </assembly>
     <members>
+        <member name="M:Practice.Controllers.AuthorController.AuthorsList">
+            <summary>
+            Get Author List
+            </summary>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.GetConcreteAuthor(System.Guid)">
+            <summary>
+            Get author by Id
+            </summary>
+            <returns>AuthoeDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.CreatePost(Practice.Data.Dto.PostCreateDto)">
+            <summary>
+            Crete New Post
+            </summary>
+            <param name="postDto"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.EditePost(Practice.Data.Dto.PostEditDto)">
+            <summary>
+            Edite post
+            </summary>
+            <param name="postEditDto"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.DeletePost(System.Guid)">
+            <summary>
+            Delete post
+            </summary>
+            <param name="postId"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
         <member name="M:Practice.Controllers.TagController.GetTag">
              <summary>
             Get tag list
@@ -96,6 +148,18 @@
             <inheritdoc />
         </member>
         <member name="M:Practice.Migrations.InitToken.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Practice.Migrations.UserIsAuthorFlag">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.UserIsAuthorFlag.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.UserIsAuthorFlag.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.UserIsAuthorFlag.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

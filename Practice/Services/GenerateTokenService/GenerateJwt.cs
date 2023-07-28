@@ -15,7 +15,7 @@ namespace Practice.Services.GenerateTokenService
         {
             _configuration = configuration;
         }
-
+        //todo: replace GenerateUserJwt to tokenService and remove this service
         public string GenerateUserJwt(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));

@@ -27,7 +27,7 @@ namespace Practice.Controllers
         [HttpGet]
         public async Task<List<TagDto>> GetTag()
         {
-            return await _tagService.GetTagList();
+            return await _tagService.GetTagDtoList();
         }
     }
 }
