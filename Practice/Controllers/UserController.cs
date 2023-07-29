@@ -70,9 +70,10 @@ namespace Practice.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<TokenDto>> Login(LoginCredentials loginCredentials) 
         {
-            if (!ModelState.IsValid || 
-                !_registerCheckerService.IsEmailExists(loginCredentials.Email).Result) { return StatusCode(400); };
-            if (!_loginCheckService.IsLoginCorrect(loginCredentials).Result) { return StatusCode(401); }
+            if (!ModelState.IsValid) { return StatusCode(400); };
+
+            if (!await _registerCheckerService.IsEmailExists(loginCredentials.Email)
+                || !await _loginCheckService.IsLoginCorrect(loginCredentials)) { return StatusCode(401); }
 
             var token = await _authService.LogIn(loginCredentials);
 

@@ -18,7 +18,7 @@
             <summary>
             Get author by Id
             </summary>
-            <returns>AuthoeDto</returns>
+            <returns>AuthorDto</returns>
             <response  code="200">Success</response>
             <response  code="400">Bad Request</response>
             <response  code="500">Internal Server Error</response>
@@ -54,6 +54,45 @@
             <response  code="200">Success</response>
             <response  code="400">Bad Request</response>
             <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.GetPostsList">
+            <summary>
+            Get post list
+            </summary>
+            <returns>PostDto List</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.GetConcretePost(System.Guid)">
+            <summary>
+            Get post
+            </summary>
+            <returns>PostDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.Like(System.Guid)">
+            <summary>
+            Like post
+            </summary>
+            <returns>PostDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.Unlike(System.Guid)">
+            <summary>
+            DisLike post
+            </summary>
+            <returns>PostDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
             <response  code="500">Internal Server Error</response>
         </member>
         <member name="M:Practice.Controllers.TagController.GetTag">

@@ -42,7 +42,7 @@ namespace Practice.Controllers
         /// <summary>
         /// Get author by Id
         /// </summary>
-        /// <returns>AuthoeDto</returns>
+        /// <returns>AuthorDto</returns>
         /// <response  code="200">Success</response>
         /// <response  code="400">Bad Request</response>
         /// <response  code="500">Internal Server Error</response>
