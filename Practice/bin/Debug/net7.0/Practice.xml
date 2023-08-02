@@ -56,13 +56,21 @@
             <response  code="401">Unauthorized</response>
             <response  code="500">Internal Server Error</response>
         </member>
-        <member name="M:Practice.Controllers.PostController.GetPostsList">
+        <member name="M:Practice.Controllers.PostController.GetPostsList(System.Collections.Generic.List{System.Guid},System.String,System.Int32,System.Int32,Practice.Data.Model.Sort,System.Int32,System.Int32)">
             <summary>
             Get post list
             </summary>
             <returns>PostDto List</returns>
+            <param name="tagIdlist">Search by TagList</param>
+            <param name="authorName">Search by author name</param>
+            <param name="minReadTime">Set min read time in minutes</param>
+            <param name="maxReadTime">Set max read time in minutes</param>
+            <param name="sort">Set sort type</param>
+            <param name="page">Set page</param>
+            <param name="postCount">Set posts count in page</param>
             <response  code="200">Success</response>
             <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
             <response  code="500">Internal Server Error</response>
         </member>
         <member name="M:Practice.Controllers.PostController.GetConcretePost(System.Guid)">
@@ -153,52 +161,16 @@
             <response  code="401">Unauthorized</response>
             <response  code="500">Internal Server Error</response>
         </member>
-        <member name="T:Practice.Migrations.init">
+        <member name="T:Practice.Migrations.Init">
             <inheritdoc />
         </member>
-        <member name="M:Practice.Migrations.init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:Practice.Migrations.Init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:Practice.Migrations.init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:Practice.Migrations.Init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:Practice.Migrations.init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:Practice.Migrations.update001">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.update001.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.update001.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.update001.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:Practice.Migrations.InitToken">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.InitToken.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.InitToken.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.InitToken.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:Practice.Migrations.UserIsAuthorFlag">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.UserIsAuthorFlag.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.UserIsAuthorFlag.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Practice.Migrations.UserIsAuthorFlag.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:Practice.Migrations.Init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

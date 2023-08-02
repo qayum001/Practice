@@ -27,14 +27,43 @@ namespace Practice.Controllers
         /// Get post list
         /// </summary>
         /// <returns>PostDto List</returns>
+        /// <param name="tagIdlist">Search by TagList</param>
+        /// <param name="authorName">Search by author name</param>
+        /// <param name="minReadTime">Set min read time in minutes</param>
+        /// <param name="maxReadTime">Set max read time in minutes</param>
+        /// <param name="sort">Set sort type</param>
+        /// <param name="page">Set page</param>
+        /// <param name="postCount">Set posts count in page</param>
         /// <response  code="200">Success</response>
         /// <response  code="400">Bad Request</response>
+        /// <response  code="404">Not Found</response>
         /// <response  code="500">Internal Server Error</response>
         [HttpGet]
-        public async Task<ActionResult<List<PostDto>>> GetPostsList() 
+        public async Task<ActionResult<List<PostDto>>> GetPostsList(
+            [FromQuery] List<Guid>? tagIdlist = null,
+            string? authorName = null,
+            int minReadTime = 0,
+            int maxReadTime = 0,
+            Sort sort = Sort.CreateAsc,
+            int page = 1,
+            int postCount = 5) 
         {
-            //todo: добавить погинацию
-            var res = await _postService.GetPostDtoList();
+            if(!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            var pagination = new Pagination
+            {
+                TagGuidList = tagIdlist,//todo: add distinct
+                AuthorName = authorName,
+                MinReadTime = minReadTime,
+                MaxReadTime = maxReadTime,
+                Sort = sort,
+                Page = page,
+                PostCount = postCount
+            };
+
+            var res = await _postService.GetPostDtoList(pagination);
+
+            if(res == null) return NotFound();
 
             return Ok(res);
         }

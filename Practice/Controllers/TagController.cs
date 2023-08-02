@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Practice.Data;
 using Practice.Data.Dto;
+using Practice.Data.Model;
 using Practice.Services.TagService;
 
 namespace Practice.Controllers
@@ -28,6 +29,20 @@ namespace Practice.Controllers
         public async Task<List<TagDto>> GetTag()
         {
             return await _tagService.GetTagDtoList();
+        }
+        [HttpPost]
+        public async Task CreateTags(List<string> tags)
+        {
+            foreach (var item in tags)
+            {
+                _context.Tag.Add(new Tag
+                {
+                    Id = Guid.NewGuid(),
+                    Name = item,
+                    CreatedTime = DateTime.Now,
+                });
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

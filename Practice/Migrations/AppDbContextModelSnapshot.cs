@@ -161,8 +161,17 @@ namespace Practice.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("ReadingTime")
-                        .HasColumnType("time");
+                    b.Property<int>("CommentsConunt")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("HasLIke")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReadingTime")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()

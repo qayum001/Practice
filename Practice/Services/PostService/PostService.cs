@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
@@ -14,16 +15,32 @@ namespace Practice.Services.PostService
             _context = context;
         }
 
-        public async Task<List<PostDto>> GetPostDtoList()
+        public async Task<List<PostDto>?> GetPostDtoList(Pagination pagination)
         {
-            var postList = _context.Post
-                .Include(e => e.Tags)
-                .Include(e => e.Likes)
-                .ToList();
+            var postList = await SortSwitch(pagination.Sort);
+
+            var nameSort = postList;
+
+            if (pagination.AuthorName != null) nameSort = await SearchByAuthor(postList, pagination.AuthorName);
+
+            var tagSorted = nameSort;
+
+            if (pagination.TagGuidList != null && pagination.TagGuidList.Count != 0) tagSorted = await SortByTag(nameSort, pagination.TagGuidList);
+
+            if (tagSorted.Count == 0) return null;
+
+            var readTimeSorted = tagSorted;
+
+            if (pagination.MinReadTime != 0 || pagination.MaxReadTime != 0)
+                readTimeSorted = await ReadTimeSort(tagSorted, pagination.MinReadTime, pagination.MaxReadTime);
+
+            if (readTimeSorted.Count == 0) return null;
+
+            var pagePosts = await GetPagePost(readTimeSorted, pagination.Page, pagination.PostCount);
 
             var dtoList = new List<PostDto>();
 
-            foreach (var post in postList)
+            foreach (var post in pagePosts)
             {
                 var postDtoList = new PostDto
                 {
@@ -33,7 +50,10 @@ namespace Practice.Services.PostService
                     Body = post.Text,
                     ReadTime = post.ReadingTime,
                     LikesCount = post.Likes.Count,
-                    TagList = await GetTagDtoList(post.Tags.ToList())
+                    TagList = await GetTagDtoList(post.Tags.ToList()),
+                    AuthorName = _context.User.First(e => e.Id == post.UserId).FullName,
+                    HasLike = post.Likes.Count > 0,
+                    //CommentsCount = post.Comments.Count,
                 };
 
                 dtoList.Add(postDtoList);
@@ -76,6 +96,7 @@ namespace Practice.Services.PostService
             var post = await _context.Post
                 .Include(e => e.Tags)
                 .Include(e => e.Likes)
+                .Include(e => e.User)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (post == null) return null;
@@ -88,7 +109,10 @@ namespace Practice.Services.PostService
                 Body = post.Text,
                 ReadTime = post.ReadingTime,
                 LikesCount = post.Likes.Count,
-                TagList = await GetTagDtoList(post.Tags.ToList())
+                TagList = await GetTagDtoList(post.Tags.ToList()),
+                AuthorName = post.User.FullName,
+                HasLike = post.Likes.Count > 0,
+                //CommentsCount = post.Comments.Count,
             };
 
             return postDto;
@@ -154,5 +178,103 @@ namespace Practice.Services.PostService
 
             return Task.FromResult(result);
         }
+
+        private Task<List<Post>> SortByTag(List<Post> postList, List<Guid> tagGuidList)
+        {
+            var tagsCount = tagGuidList.Count;
+
+            var res = new List<Post>();
+
+            foreach (var post in postList)
+            {
+                var tagsInPost = post.Tags.ToArray();
+
+                var hasTags = false;
+
+
+                foreach (var tagId in tagGuidList)
+                {
+                    hasTags = tagsInPost.Contains(_context.Tag.First(e => e.Id == tagId));
+                }
+
+                if (hasTags) res.Add(post);
+            }
+
+            return Task.FromResult(res);
+        }
+
+        private Task<List<Post>> SortSwitch(Sort sort) => sort switch
+        {
+            Sort.CreateAsc => Task.FromResult(_context.Post
+                .Include(e => e.Tags)
+                .Include(e => e.Likes)
+                .Include(e => e.User)
+                .OrderBy(e => e.Created)
+                .ToList()),
+
+            Sort.CreateDesc => Task.FromResult(_context.Post
+                .Include(e => e.Tags)
+                .Include(e => e.User)
+                .Include(e => e.Likes)
+                .OrderByDescending(e => e.Created)
+                .ToList()),
+
+            Sort.LikeAsc => Task.FromResult(_context.Post
+                .Include(e => e.Tags)
+                .Include(e => e.Likes)
+                .Include(e => e.User)
+                .OrderBy(e => e.Likes.Count)
+                .ToList()),
+
+            Sort.LikeDesc => Task.FromResult(_context.Post
+                .Include(e => e.Tags)
+                .Include(e => e.Likes)
+                .Include(e => e.User)
+                .OrderBy(e => e.Likes.Count)
+                .ToList()),
+
+            _ => throw new ArgumentException(message: "not implemented request", paramName: nameof(sort))
+        };
+
+        private Task<List<Post>> ReadTimeSort(List<Post> postList, int min, int max)
+        {
+
+            max = max == 0 ? int.MaxValue : max;
+
+            var orderedList = postList.OrderBy(e => e.ReadingTime);
+
+            var res = new List<Post>();
+
+            foreach(var item in orderedList)
+            {
+                var readTime = item.ReadingTime;
+                if(readTime >= min && readTime <= max) res.Add(item);
+            }
+            return Task.FromResult(res);
+        } 
+
+        private Task<List<Post>> GetPagePost(List<Post> posts, int page, int postsInPage)
+        {
+            var postCount = posts.Count;
+
+            var startIndex = (page - 1) * postsInPage;
+
+            if(startIndex > postCount) return Task.FromResult(new List<Post>());
+
+            var endIndex = startIndex + postsInPage;
+
+            if(endIndex > postCount) endIndex = startIndex + (postCount % postsInPage);
+
+            var res = new List<Post>();
+
+            for (var i = startIndex; i < endIndex; i++)
+            {
+                res.Add(posts[i]);
+            }
+
+            return Task.FromResult(res);
+        }
+        
+        private Task<List<Post>> SearchByAuthor(List<Post> posts, string author) => Task.FromResult(posts.Where(e => e.User.FullName == author).ToList());
     }
 }

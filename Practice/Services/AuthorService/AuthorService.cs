@@ -55,8 +55,9 @@ namespace Practice.Services.AuthorService
                 Text = postDto.Body,
                 UserId = user.Id,
                 User = user,
-                ReadingTime = new TimeSpan(postDto.ReadTime * 1000 * 60),
+                ReadingTime = postDto.ReadTime,
                 Tags = tagList,
+                Created = DateTime.Now,
             };
 
             if (!user.IsAuthor)
@@ -144,9 +145,7 @@ namespace Practice.Services.AuthorService
 
             post.Title = string.IsNullOrEmpty(postEditDto.Title) ? post.Title : postEditDto.Title;
             post.Text = string.IsNullOrEmpty(postEditDto.Text) ? post.Text : postEditDto.Text;
-            post.ReadingTime = postEditDto.ReadTime == 0 ? post.ReadingTime : new TimeSpan(postEditDto.ReadTime * 60 * 1000);
-
-            //do not save _context
+            post.ReadingTime = postEditDto.ReadTime == 0 ? post.ReadingTime : postEditDto.ReadTime;     //do not save _context
             await _tagService.AddTagsToPost(post, postEditDto.AddTagGuidList);
             await _tagService.DeleteTagsFromPost(post, postEditDto.DeleteTagGuidList);
 

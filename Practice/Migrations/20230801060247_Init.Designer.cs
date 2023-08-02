@@ -12,8 +12,8 @@ using Practice.Data;
 namespace Practice.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230720025952_InitToken")]
-    partial class InitToken
+    [Migration("20230801060247_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,8 +164,17 @@ namespace Practice.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("ReadingTime")
-                        .HasColumnType("time");
+                    b.Property<int>("CommentsConunt")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("HasLIke")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReadingTime")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -245,6 +254,9 @@ namespace Practice.Migrations
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsAuthor")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Password")
                         .IsRequired()
