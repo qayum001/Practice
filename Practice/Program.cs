@@ -13,6 +13,7 @@ using Practice.Services.UserService;
 using Practice.Services.TagService;
 using Practice.Services.AuthorService;
 using Practice.Services.PostService;
+using Practice.Services.CommentService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +82,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 #endregion
 
 //jwt bearer

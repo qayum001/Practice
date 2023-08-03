@@ -12,7 +12,7 @@ using Practice.Data;
 namespace Practice.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230801060247_Init")]
+    [Migration("20230803083834_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -40,10 +40,13 @@ namespace Practice.Migrations
                     b.ToTable("PostTag");
                 });
 
-            modelBuilder.Entity("Practice.Data.Model.ChildComment", b =>
+            modelBuilder.Entity("Practice.Data.Model.ChildCommentId", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CommentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ParentId")
@@ -62,8 +65,9 @@ namespace Practice.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ChildCommentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
@@ -77,17 +81,8 @@ namespace Practice.Migrations
                     b.Property<Guid?>("ParentCommentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ParentCommentId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("PostId1")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SubCommentsCount")
-                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -98,11 +93,7 @@ namespace Practice.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentCommentId1");
-
                     b.HasIndex("PostId");
-
-                    b.HasIndex("PostId1");
 
                     b.HasIndex("UserId");
 
@@ -139,23 +130,6 @@ namespace Practice.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Like");
-                });
-
-            modelBuilder.Entity("Practice.Data.Model.ParentComment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ChildId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildId")
-                        .IsUnique();
-
-                    b.ToTable("ParentComment");
                 });
 
             modelBuilder.Entity("Practice.Data.Model.Post", b =>
@@ -286,38 +260,26 @@ namespace Practice.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Practice.Data.Model.ChildComment", b =>
+            modelBuilder.Entity("Practice.Data.Model.ChildCommentId", b =>
                 {
-                    b.HasOne("Practice.Data.Model.Comment", "ParentComment")
+                    b.HasOne("Practice.Data.Model.Comment", null)
                         .WithMany("ChildComments")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ParentComment");
                 });
 
             modelBuilder.Entity("Practice.Data.Model.Comment", b =>
                 {
-                    b.HasOne("Practice.Data.Model.ParentComment", "ParentComment")
-                        .WithMany()
-                        .HasForeignKey("ParentCommentId1");
-
                     b.HasOne("Practice.Data.Model.Post", "Post")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Practice.Data.Model.Post", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId1");
-
                     b.HasOne("Practice.Data.Model.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("ParentComment");
 
                     b.Navigation("Post");
 
@@ -343,17 +305,6 @@ namespace Practice.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Practice.Data.Model.ParentComment", b =>
-                {
-                    b.HasOne("Practice.Data.Model.Comment", "ChildComment")
-                        .WithOne()
-                        .HasForeignKey("Practice.Data.Model.ParentComment", "ChildId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ChildComment");
                 });
 
             modelBuilder.Entity("Practice.Data.Model.Post", b =>

@@ -4,6 +4,6 @@
     {
         public Guid Id { get; set; }
         public Guid ChildId { get; set; }
-        public Comment ChildComment { get; set; }
+        public ICollection<Comment> ChildComment { get; set; }
     }
 }

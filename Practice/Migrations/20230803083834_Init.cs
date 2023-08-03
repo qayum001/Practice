@@ -86,6 +86,36 @@ namespace Practice.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comment",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DelitedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentCommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comment_Post_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Post",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comment_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Like",
                 columns: table => new
                 {
@@ -146,67 +176,18 @@ namespace Practice.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChildComment", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comment",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DelitedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SubCommentsCount = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ParentCommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ParentCommentId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ChildCommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PostId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Post_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Post",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Comment_Post_PostId1",
-                        column: x => x.PostId1,
-                        principalTable: "Post",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Comment_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ParentComment",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ChildId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParentComment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ParentComment_Comment_ChildId",
-                        column: x => x.ChildId,
+                        name: "FK_ChildComment_Comment_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Comment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -215,19 +196,9 @@ namespace Practice.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ParentCommentId1",
-                table: "Comment",
-                column: "ParentCommentId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Comment_PostId",
                 table: "Comment",
                 column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comment_PostId1",
-                table: "Comment",
-                column: "PostId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_UserId",
@@ -250,12 +221,6 @@ namespace Practice.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParentComment_ChildId",
-                table: "ParentComment",
-                column: "ChildId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Post_UserId",
                 table: "Post",
                 column: "UserId");
@@ -269,30 +234,11 @@ namespace Practice.Migrations
                 name: "IX_UsedToken_UserId",
                 table: "UsedToken",
                 column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ChildComment_Comment_ParentId",
-                table: "ChildComment",
-                column: "ParentId",
-                principalTable: "Comment",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Comment_ParentComment_ParentCommentId1",
-                table: "Comment",
-                column: "ParentCommentId1",
-                principalTable: "ParentComment",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ParentComment_Comment_ChildId",
-                table: "ParentComment");
-
             migrationBuilder.DropTable(
                 name: "ChildComment");
 
@@ -306,13 +252,10 @@ namespace Practice.Migrations
                 name: "UsedToken");
 
             migrationBuilder.DropTable(
-                name: "Tag");
-
-            migrationBuilder.DropTable(
                 name: "Comment");
 
             migrationBuilder.DropTable(
-                name: "ParentComment");
+                name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "Post");

@@ -91,17 +91,41 @@ namespace Practice.Services.PostService
             return responce;
         }
 
-        public async Task<PostDto?> GetPostDtoById(Guid id)
+        public async Task<PostWithCommentsDto?> GetPostDtoById(Guid id)
         {
             var post = await _context.Post
                 .Include(e => e.Tags)
                 .Include(e => e.Likes)
                 .Include(e => e.User)
+                .Include(e => e.Comments)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (post == null) return null;
 
-            var postDto = new PostDto
+            var commentsList = new List<CommentDto>();
+
+            foreach (var comment in post.Comments)
+            {
+
+                var subComments = _context.Comment.Include(e => e.ChildComments).First(e => e.Id == comment.Id);
+                var subCommentsCount = subComments.ChildComments == null ? 0 : subComments.ChildComments.Count;
+
+                if (comment.ParentCommentId != null) continue;
+
+                commentsList.Add(new CommentDto
+                {
+                    CommentId = comment.Id,
+                    CreateTime = comment.CreateTime,
+                    EditTime = comment.ModifiedTime,
+                    DeleteTime = comment.DelitedDate,
+                    Content = comment.Text,
+                    AuthorId = comment.UserId,
+                    AuthorName = comment.AuthorName,
+                    SubCommentsCount = subCommentsCount
+                });
+            }
+
+            var postDto = new PostWithCommentsDto
             {
                 PostId = id,
                 UserId = post.UserId,
@@ -112,7 +136,8 @@ namespace Practice.Services.PostService
                 TagList = await GetTagDtoList(post.Tags.ToList()),
                 AuthorName = post.User.FullName,
                 HasLike = post.Likes.Count > 0,
-                //CommentsCount = post.Comments.Count,
+                CommentsCount = post.Comments.Count,
+                CommentList = commentsList
             };
 
             return postDto;

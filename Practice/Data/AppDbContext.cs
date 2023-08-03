@@ -10,8 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<User> User { get; set; }
     public DbSet<Post> Post { get; set; }
     public DbSet<Comment> Comment { get; set; }
-    public DbSet<ParentComment> ParentComment { get; set; }
-    public DbSet<ChildComment> ChildComment { get; set; }
+    public DbSet<ChildCommentId> ChildComment { get; set; }
     public DbSet<Like> Like { get; set; }
     public DbSet<Tag> Tag { get; set; }
     public DbSet<UsedToken> UsedToken { get; set; }
@@ -49,7 +48,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Post>().HasKey(e => e.Id);
         modelBuilder.Entity<Post>()
-            .HasMany<Comment>()
+            .HasMany(e => e.Comments)
             .WithOne(e => e.Post)
             .HasForeignKey(e => e.PostId)
             .IsRequired();
@@ -71,19 +70,14 @@ public class AppDbContext : DbContext
         #endregion
 
         #region Comment
-
-        modelBuilder.Entity<ParentComment>().HasKey(e => e.Id);
-        modelBuilder.Entity<ChildComment>().HasKey(e => e.Id);
+        modelBuilder.Entity<ChildCommentId>().HasKey(e => e.Id);
 
         modelBuilder.Entity<Comment>().HasKey(e => e.Id);
         modelBuilder.Entity<Comment>()
-            .HasOne<ParentComment>()
-            .WithOne(e => e.ChildComment)
-            .HasForeignKey<ParentComment>(e => e.ChildId).OnDelete(DeleteBehavior.Restrict);
-        modelBuilder.Entity<Comment>()
             .HasMany(e => e.ChildComments)
-            .WithOne(e => e.ParentComment)
-            .HasForeignKey(e => e.ParentId).OnDelete(DeleteBehavior.Cascade);
+            .WithOne()
+            .IsRequired()
+            .HasForeignKey(e => e.ParentId);
 
         #endregion
 
