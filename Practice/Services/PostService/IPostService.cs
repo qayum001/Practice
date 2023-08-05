@@ -7,7 +7,7 @@ namespace Practice.Services.PostService
     {
         Task<List<PostDto>?> GetPostDtoList(Pagination pagination);
         Task<PostWithCommentsDto?> GetPostDtoById(Guid id);
-        Task<Response?> LikePost(Guid userId, Guid postId);
-        Task<Response?> DisLikePost(Guid userId, Guid postId);
+        Task<Response> LikePost(Guid userId, Guid postId);
+        Task<Response> DisLikePost(Guid userId, Guid postId);
     }
 }

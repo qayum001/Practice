@@ -39,7 +39,9 @@ namespace Practice.Services.AuthorService
 
         public async Task<Response> CreatePost(Guid AuthorId, PostCreateDto postDto)
         {
-            var user = await _context.User.Include(e => e.Posts).FirstAsync(e => e.Id == AuthorId);
+            var user = await _context.User
+                .Include(e => e.Posts)
+                .FirstAsync(e => e.Id == AuthorId);
 
             var tagList = await _tagService.GetTagListByIdList(postDto.TagGuidList);
 
@@ -71,7 +73,9 @@ namespace Practice.Services.AuthorService
         {
             var authorList = _context.User
                 .Include(e => e.Posts)
-                .Include(e => e.Likes).Where(User => User.IsAuthor == true).ToList();
+                .Include(e => e.Likes)
+                .Where(User => User.IsAuthor == true)
+                .ToList();
 
             var authorDtoList = new List<AuthorDto>();
 
@@ -111,7 +115,9 @@ namespace Practice.Services.AuthorService
 
         public async Task<Response> EditPost(Guid userId, PostEditDto postEditDto)
         {
-            var post = await _context.Post.Include(e => e.Tags).FirstAsync(e => e.Id == postEditDto.PostId);
+            var post = await _context.Post
+                .Include(e => e.Tags)
+                .FirstAsync(e => e.Id == postEditDto.PostId);
 
             var respose = new Response();
 
@@ -122,7 +128,7 @@ namespace Practice.Services.AuthorService
 
                 return respose;
             }
-            //todo: try to add mapper aftef validator
+
             post.Title = string.IsNullOrEmpty(postEditDto.Title) ? post.Title : postEditDto.Title;
             post.Text = string.IsNullOrEmpty(postEditDto.Text) ? post.Text : postEditDto.Text;
             post.ReadTime = postEditDto.ReadTime == 0 ? post.ReadTime : postEditDto.ReadTime;     //do not save _context

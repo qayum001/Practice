@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
@@ -40,13 +39,21 @@ namespace Practice.Services.PostService
             return dtoList;
         }
 
-        public async Task<Response?> DisLikePost(Guid userId, Guid postId)
+        public async Task<Response> DisLikePost(Guid userId, Guid postId)
         {
             var post = await _context.Post
                 .Include(e => e.Likes)
                 .FirstOrDefaultAsync(e => e.Id == postId);
 
-            if (post == null) return null;
+            var response = new Response();
+
+            if (post == null)
+            {
+                response.Stasus = "Fail";
+                response.Message = "Post not found";
+
+                return response;
+            }
 
             var user = await _context.User
                 .Include(e => e.Likes)
@@ -60,13 +67,11 @@ namespace Practice.Services.PostService
 
             await _context.SaveChangesAsync();
 
-            var responce = new Response
-            {
-                Stasus = "Success",
-                Message = "Like has been removed"
-            };
 
-            return responce;
+            response.Stasus = "Success";
+            response.Message = "Like has been removed";
+
+            return response;
         }
 
         public async Task<PostWithCommentsDto?> GetPostDtoById(Guid id)
@@ -131,21 +136,27 @@ namespace Practice.Services.PostService
             return pagePosts;
         }
 
-        public async Task<Response?> LikePost(Guid userId, Guid postId)
+        public async Task<Response> LikePost(Guid userId, Guid postId)
         {
             var post = await _context.Post
                 .Include(e => e.Likes)
                 .FirstOrDefaultAsync(e => e.Id == postId);
 
-            if (post == null) return null;
+            var response = new Response();
+
+            if (post == null)
+            {
+                response.Stasus = "Fail";
+                response.Message = "Post not found";
+
+                return response;
+            }
 
             var user = await _context.User
                 .Include(e => e.Likes)
                 .FirstAsync(e => e.Id == userId);
 
             var LikedPost = user.Likes.FirstOrDefault(e => e.PostId == postId);
-
-            var response = new Response();
 
             if (LikedPost != null)
             {

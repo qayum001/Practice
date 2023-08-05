@@ -101,7 +101,6 @@ namespace Practice.Controllers
             var isValid = await _tokenService.IsTokenValid(token);
 
             if (!isValid) return StatusCode(401);
-            if (!ModelState.IsValid) return BadRequest();
 
             var userId = await _tokenService.GetGuid(token);
 

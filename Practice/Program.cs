@@ -13,9 +13,11 @@ using Practice.Services.TagService;
 using Practice.Services.AuthorService;
 using Practice.Services.PostService;
 using Practice.Services.CommentService;
-using AutoMapper;
 using Practice.Data.AppMapper;
-using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 
+//Fluent Validator
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddFluentValidationRulesToSwagger();
 
 //Swagger
 builder.Services.AddSwaggerGen(e =>
@@ -66,7 +72,7 @@ builder.Services.AddSwaggerGen(e =>
     });
 });
 
-//mapper
+//Auto Mapper
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<AppMapper>();

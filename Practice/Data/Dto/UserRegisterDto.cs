@@ -1,4 +1,5 @@
 ﻿using Practice.Data.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace Practice.Data.Dto
 {
@@ -6,6 +7,7 @@ namespace Practice.Data.Dto
     {
         public string FullName { get; set; }
         public string Password { get; set; }
+        [EmailAddress]
         public string Email { get; set; }
         public DateTime BirthDay { get; set; }
         public string PhoneNumber { get; set; }

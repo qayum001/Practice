@@ -7,6 +7,7 @@ using Practice.Data.Model;
 using Microsoft.AspNetCore.Authorization;
 using Practice.Services.TokenService;
 using Practice.Services.UserService;
+using FluentValidation;
 
 namespace Practice.Controllers
 {
@@ -25,7 +26,8 @@ namespace Practice.Controllers
             IRegisterCheckerService registerCheckerService,
             ILoginCheckService loginCheckService,
             ITokenService tokenService,
-            IUserService userService
+            IUserService userService,
+            IValidator<UserRegisterDto> registerValidator
             )
         {
             _authService = authService;
@@ -46,9 +48,7 @@ namespace Practice.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<TokenDto>> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            if (!ModelState.IsValid) { return StatusCode(400); }
-
-            if (_registerCheckerService.IsEmailExists(userRegisterDto.Email).Result) { return StatusCode(400); }
+            if (_registerCheckerService.IsEmailExists(userRegisterDto.Email).Result) return StatusCode(400, "Email already exists");
 
             var token = new TokenDto()
             {

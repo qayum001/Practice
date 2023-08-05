@@ -59,8 +59,6 @@ namespace Practice.Controllers
 
             if(!await _tokenService.IsTokenValid(token)) return Unauthorized();
 
-            if(!ModelState.IsValid) {  return BadRequest(); }
-
             var userId = await _tokenService.GetGuid(token);
 
             var response = await _commentService.CommentPost(id, userId, commentCreateDto);

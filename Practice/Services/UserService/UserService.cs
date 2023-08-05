@@ -26,7 +26,7 @@ namespace Practice.Services.UserService
 
             user.Email = editUserDto.Email.IsNullOrEmpty() ? user.Email : editUserDto.Email;
             user.FullName = editUserDto.FullName.IsNullOrEmpty() ? user.FullName : editUserDto.FullName;
-            user.BirthDay = editUserDto.BirthDate;
+            user.BirthDay = editUserDto.BirthDay;
             user.Gender = editUserDto.Gender;
             user.PhoneNumber = editUserDto.Phone.IsNullOrEmpty() ? user.PhoneNumber : editUserDto.Phone;
 
