@@ -6,7 +6,6 @@ using Practice.Services.AuthService;
 using Practice.Services.CheckerService;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Practice.Services.GenerateTokenService;
 using Practice.Services.CheckerService.ILoginCheckerService;
 using Practice.Services.TokenService;
 using Practice.Services.UserService;
@@ -14,6 +13,9 @@ using Practice.Services.TagService;
 using Practice.Services.AuthorService;
 using Practice.Services.PostService;
 using Practice.Services.CommentService;
+using AutoMapper;
+using Practice.Data.AppMapper;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +66,12 @@ builder.Services.AddSwaggerGen(e =>
     });
 });
 
+//mapper
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<AppMapper>();
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -73,7 +81,6 @@ builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(connec
 
 //Services
 #region Service
-builder.Services.AddScoped<IGenerateJwt, GenerateJwt>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRegisterCheckerService, RegisterCheckerService>();
 builder.Services.AddScoped<ILoginCheckService, LoginCheckService>();

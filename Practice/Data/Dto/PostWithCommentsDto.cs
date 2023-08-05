@@ -7,7 +7,7 @@
         public DateTime Created { get; set; }
         public string AuthorName { get; set; }
         public string Title { get; set; }
-        public string Body { get; set; }
+        public string Text { get; set; }
         public int ReadTime { get; set; }
         public int LikesCount { get; set; }
         public int CommentsCount { get; set; }

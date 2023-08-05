@@ -1,35 +1,41 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
+using System.Runtime.CompilerServices;
 
 namespace Practice.Services.UserService
 {
     public class UserService : IUserService
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public UserService(AppDbContext context)
+        public UserService(AppDbContext context,
+            IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-
+        
         public async Task<Response> EditUserProfileAsync(Guid id, EditUserDto editUserDto)
         {
             var user = await _context.User.FirstAsync(e => e.Id == id);
 
-            user.Email = editUserDto.Email;
-            user.FullName = editUserDto.FullName;
+            user.Email = editUserDto.Email.IsNullOrEmpty() ? user.Email : editUserDto.Email;
+            user.FullName = editUserDto.FullName.IsNullOrEmpty() ? user.FullName : editUserDto.FullName;
             user.BirthDay = editUserDto.BirthDate;
             user.Gender = editUserDto.Gender;
-            user.PhoneNumber = editUserDto.Phone;
+            user.PhoneNumber = editUserDto.Phone.IsNullOrEmpty() ? user.PhoneNumber : editUserDto.Phone;
 
             await _context.SaveChangesAsync();
 
             var res = new Response
             {
-                Stasus = "edited",
-                Message = "Your profile updated"
+                Stasus = "Success",
+                Message = "Profile Edited"
             };
 
             return res;
@@ -39,16 +45,7 @@ namespace Practice.Services.UserService
         {
             var user = await _context.User.FirstAsync(e => e.Id == id);
 
-            var dto = new UserDto
-            {
-                Id = id,
-                CreateTime = user.Created,
-                BirthDay = user.BirthDay,
-                FullName = user.FullName,
-                Email = user.Email,
-                Phone = user.PhoneNumber,
-                Gender = user.Gender,
-            };
+            var dto = _mapper.Map<UserDto>(user);
 
             return dto;
         }

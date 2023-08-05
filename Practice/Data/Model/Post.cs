@@ -6,7 +6,7 @@ namespace Practice.Data.Model
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
-        public int ReadingTime { get; set; }
+        public int ReadTime { get; set; }
         public DateTime Created { get; set; }
         //User
         public Guid UserId { get; set; }

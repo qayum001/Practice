@@ -150,6 +150,8 @@ namespace Practice.Controllers
 
             var id = await _tokenService.GetGuid(token);
 
+            //todo: add validator here or in userService
+
             var response = await _userService.EditUserProfileAsync(id, editUserDto);
 
             return Ok(response);

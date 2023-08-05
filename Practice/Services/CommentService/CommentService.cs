@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
@@ -9,10 +9,13 @@ namespace Practice.Services.CommentService
     public class CommentService : ICommentService
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CommentService(AppDbContext context)
+        public CommentService(AppDbContext context,
+            IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Response> CommentPost(Guid postId, Guid userId, CommentCreateDto commentCreateDto)
@@ -64,7 +67,7 @@ namespace Practice.Services.CommentService
 
             var isDeleted = comment.DelitedDate.Year != 1;
 
-            if (isDeleted) return new Response { Stasus = "Fail", Message = "CommentDeleted" };
+            if (isDeleted) return new Response { Stasus = "Fail", Message = "Comment Deleted" };
 
             if (comment.UserId != userId) return new Response { Stasus = "Fail", Message = "User not allowed" };
 
@@ -92,17 +95,7 @@ namespace Practice.Services.CommentService
                 {
                     var subComment = await _context.Comment.Include(e => e.ChildComments).FirstAsync(e => e.Id ==  subCommentId.CommentId);
 
-                    res.Add(new CommentDto
-                    {
-                        CommentId = subComment.Id,
-                        Content = subComment.Text,
-                        CreateTime = subComment.CreateTime,
-                        DeleteTime = subComment.DelitedDate,
-                        SubCommentsCount = subComment.ChildComments == null ? 0 : subComment.ChildComments.Count,
-                        EditTime = subComment.ModifiedTime,
-                        AuthorId = subComment.UserId,
-                        AuthorName = subComment.AuthorName
-                    });
+                    res.Add(_mapper.Map<CommentDto>(subComment)); 
                 }
             }
 

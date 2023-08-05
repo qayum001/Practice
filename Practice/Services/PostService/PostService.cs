@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Practice.Data;
 using Practice.Data.Dto;
@@ -9,54 +10,31 @@ namespace Practice.Services.PostService
     public class PostService : IPostService
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PostService(AppDbContext context)
+        public PostService(AppDbContext context,
+            IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<List<PostDto>?> GetPostDtoList(Pagination pagination)
         {
-            var postList = await SortSwitch(pagination.Sort);
+            var pagePosts = await GetPagePosts(pagination);
 
-            var nameSort = postList;
-
-            if (pagination.AuthorName != null) nameSort = await SearchByAuthor(postList, pagination.AuthorName);
-
-            var tagSorted = nameSort;
-
-            if (pagination.TagGuidList != null && pagination.TagGuidList.Count != 0) tagSorted = await SortByTag(nameSort, pagination.TagGuidList);
-
-            if (tagSorted.Count == 0) return null;
-
-            var readTimeSorted = tagSorted;
-
-            if (pagination.MinReadTime != 0 || pagination.MaxReadTime != 0)
-                readTimeSorted = await ReadTimeSort(tagSorted, pagination.MinReadTime, pagination.MaxReadTime);
-
-            if (readTimeSorted.Count == 0) return null;
-
-            var pagePosts = await GetPagePost(readTimeSorted, pagination.Page, pagination.PostCount);
+            if(pagePosts == null) return null;
 
             var dtoList = new List<PostDto>();
 
             foreach (var post in pagePosts)
             {
-                var postDtoList = new PostDto
-                {
-                    PostId = post.Id,
-                    UserId = post.UserId,
-                    Title = post.Title,
-                    Body = post.Text,
-                    ReadTime = post.ReadingTime,
-                    LikesCount = post.Likes.Count,
-                    TagList = await GetTagDtoList(post.Tags.ToList()),
-                    AuthorName = _context.User.First(e => e.Id == post.UserId).FullName,
-                    HasLike = post.Likes.Count > 0,
-                    //CommentsCount = post.Comments.Count,
-                };
+                var postDto = _mapper.Map<PostDto>(post)
+;
+                postDto.TagList = await GetTagDtoList(post.Tags.ToList());
+                postDto.AuthorName = _context.User.First(e => e.Id == post.UserId).FullName;
 
-                dtoList.Add(postDtoList);
+                dtoList.Add(postDto);
             }
 
             return dtoList;
@@ -106,41 +84,51 @@ namespace Practice.Services.PostService
 
             foreach (var comment in post.Comments)
             {
-
-                var subComments = _context.Comment.Include(e => e.ChildComments).First(e => e.Id == comment.Id);
+                var subComments = await _context.Comment.Include(e => e.ChildComments).FirstAsync(e => e.Id == comment.Id);
                 var subCommentsCount = subComments.ChildComments == null ? 0 : subComments.ChildComments.Count;
 
                 if (comment.ParentCommentId != null) continue;
 
-                commentsList.Add(new CommentDto
-                {
-                    CommentId = comment.Id,
-                    CreateTime = comment.CreateTime,
-                    EditTime = comment.ModifiedTime,
-                    DeleteTime = comment.DelitedDate,
-                    Content = comment.Text,
-                    AuthorId = comment.UserId,
-                    AuthorName = comment.AuthorName,
-                    SubCommentsCount = subCommentsCount
-                });
+                var commentDto = _mapper.Map<CommentDto>(comment);
+
+                commentDto.SubCommentsCount = subCommentsCount;
+
+                commentsList.Add(commentDto);
             }
 
-            var postDto = new PostWithCommentsDto
-            {
-                PostId = id,
-                UserId = post.UserId,
-                Title = post.Title,
-                Body = post.Text,
-                ReadTime = post.ReadingTime,
-                LikesCount = post.Likes.Count,
-                TagList = await GetTagDtoList(post.Tags.ToList()),
-                AuthorName = post.User.FullName,
-                HasLike = post.Likes.Count > 0,
-                CommentsCount = post.Comments.Count,
-                CommentList = commentsList
-            };
+            var postDtoWC = _mapper.Map<PostWithCommentsDto>(post);
 
-            return postDto;
+            postDtoWC.PostId = id;
+            postDtoWC.TagList = await GetTagDtoList(post.Tags.ToList());
+            postDtoWC.CommentList = commentsList;
+
+            return postDtoWC;
+        }
+
+        private async Task<List<Post>?> GetPagePosts(Pagination pagination)
+        {
+            var postList = await SortSwitch(pagination.Sort);
+
+            var nameSort = postList;
+
+            if (pagination.AuthorName != null) nameSort = await SearchByAuthor(postList, pagination.AuthorName);
+
+            var tagSorted = nameSort;
+
+            if (pagination.TagGuidList != null && pagination.TagGuidList.Count != 0) tagSorted = await SortByTag(nameSort, pagination.TagGuidList);
+
+            if (tagSorted.Count == 0) return null;
+
+            var readTimeSorted = tagSorted;
+
+            if (pagination.MinReadTime != 0 || pagination.MaxReadTime != 0)
+                readTimeSorted = await ReadTimeSort(tagSorted, pagination.MinReadTime, pagination.MaxReadTime);
+
+            if (readTimeSorted.Count == 0) return null;
+
+            var pagePosts = await GetPagePost(readTimeSorted, pagination.Page, pagination.PostCount);
+
+            return pagePosts;
         }
 
         public async Task<Response?> LikePost(Guid userId, Guid postId)
@@ -266,13 +254,13 @@ namespace Practice.Services.PostService
 
             max = max == 0 ? int.MaxValue : max;
 
-            var orderedList = postList.OrderBy(e => e.ReadingTime);
+            var orderedList = postList.OrderBy(e => e.ReadTime);
 
             var res = new List<Post>();
 
             foreach(var item in orderedList)
             {
-                var readTime = item.ReadingTime;
+                var readTime = item.ReadTime;
                 if(readTime >= min && readTime <= max) res.Add(item);
             }
             return Task.FromResult(res);

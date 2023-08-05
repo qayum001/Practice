@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
@@ -11,12 +12,15 @@ namespace Practice.Services.AuthorService
     {
         private readonly AppDbContext _context;
         private readonly ITagService _tagService;
+        private readonly IMapper _mapper;
 
         public AuthorService(AppDbContext context,
-            ITagService tagService)
+            ITagService tagService,
+            IMapper mapper)
         {
             _context = context;
             _tagService = tagService;
+            _mapper = mapper;
         }
 
         public async Task<AuthorDto?> GetAuthorDto(Guid id)
@@ -28,16 +32,7 @@ namespace Practice.Services.AuthorService
 
             if (author == null || !author.IsAuthor) return null;
 
-            var authorDto = new AuthorDto()
-            {
-                Id = author.Id,
-                FullName = author.FullName,
-                CreateTime = author.Created,
-                BirthDate = author.BirthDay,
-                Likes = author.Likes.Count,
-                Posts = author.Posts.Count,
-                Gender = author.Gender,
-            };
+            var authorDto = _mapper.Map<AuthorDto>(author);
 
             return authorDto;
         }
@@ -48,17 +43,11 @@ namespace Practice.Services.AuthorService
 
             var tagList = await _tagService.GetTagListByIdList(postDto.TagGuidList);
 
-            var post = new Post()
-            {
-                Id = Guid.NewGuid(),
-                Title = postDto.Title,
-                Text = postDto.Body,
-                UserId = user.Id,
-                User = user,
-                ReadingTime = postDto.ReadTime,
-                Tags = tagList,
-                Created = DateTime.Now,
-            };
+            var post = _mapper.Map<Post>(postDto);
+
+            post.Tags = tagList;
+            post.User = user;
+            post.UserId = user.Id;
 
             if (!user.IsAuthor)
                 user.IsAuthor = true;
@@ -88,16 +77,7 @@ namespace Practice.Services.AuthorService
 
             foreach(var author in authorList)
             {
-                var authorDto = new AuthorDto()
-                {
-                    Id = author.Id,
-                    FullName = author.FullName,
-                    BirthDate = author.BirthDay,
-                    CreateTime = author.Created,
-                    Gender = author.Gender,
-                    Posts = author.Posts.Count,
-                    Likes = author.Likes.Count,
-                };
+                var authorDto = _mapper.Map<AuthorDto>(author);
 
                 authorDtoList.Add(authorDto);
             }
@@ -142,10 +122,10 @@ namespace Practice.Services.AuthorService
 
                 return respose;
             }
-
+            //todo: try to add mapper aftef validator
             post.Title = string.IsNullOrEmpty(postEditDto.Title) ? post.Title : postEditDto.Title;
             post.Text = string.IsNullOrEmpty(postEditDto.Text) ? post.Text : postEditDto.Text;
-            post.ReadingTime = postEditDto.ReadTime == 0 ? post.ReadingTime : postEditDto.ReadTime;     //do not save _context
+            post.ReadTime = postEditDto.ReadTime == 0 ? post.ReadTime : postEditDto.ReadTime;     //do not save _context
             await _tagService.AddTagsToPost(post, postEditDto.AddTagGuidList);
             await _tagService.DeleteTagsFromPost(post, postEditDto.DeleteTagGuidList);
 

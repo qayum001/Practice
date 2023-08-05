@@ -14,6 +14,7 @@ namespace Practice.Services.CheckerService.ILoginCheckerService
         }
         public async Task<bool> IsLoginCorrect(LoginCredentials loginCredentials)
         {
+            //todo: подумой
             var res = await _context.User.FirstAsync(e => e.Email == loginCredentials.Email);
 
             return res.Password == loginCredentials.Password;
