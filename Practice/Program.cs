@@ -18,6 +18,8 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using System.Reflection;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,54 +41,27 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddFluentValidationRulesToSwagger();
 
-//Swagger
-builder.Services.AddSwaggerGen(e =>
-{
-    e.SwaggerDoc("v1", new OpenApiInfo { Title = "Practice", Version = "v1" });
 
-    var filePath = Path.Combine(AppContext.BaseDirectory , "Practice.xml");
-    e.IncludeXmlComments(filePath);
-
-    e.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-    e.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
-});
+// Эти блоки конфиругарации лучше выносить в свои методы расширения
+// подобно : 
+builder.Services.ConfigureSwagger();
 
 //Auto Mapper
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<AppMapper>();
-});
+builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<AppMapper>(); });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 //Db
-var connection = builder.Configuration["ConnectionString:DefaultConnection"];
+var connection =
+    builder.Configuration[
+        "ConnectionString:DefaultConnection"]; /// <see cref="ConfigurationExtensions.GetConnectionString(IConfiguration, string)"/>
 builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(connection));
 
 //Services
+
 #region Service
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRegisterCheckerService, RegisterCheckerService>();
 builder.Services.AddScoped<ILoginCheckService, LoginCheckService>();
@@ -96,6 +71,7 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+
 #endregion
 
 //jwt bearer
@@ -117,10 +93,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(e =>
-    {
-        e.SwaggerEndpoint("v1/swagger.json", "v1");
-    });
+    app.UseSwaggerUI(e => { e.SwaggerEndpoint("v1/swagger.json", "v1"); });
 }
 
 app.UseHttpsRedirection();
@@ -130,3 +103,45 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+public static class MySwaggerConfigurationExtensions
+{
+    /// еще можно все <see cref="IOptions{TOptions}"/> настраивать через <see cref="IConfigureOptions{T}"/> 
+    
+    public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(e =>
+        {
+            e.SwaggerDoc("v1", new OpenApiInfo { Title = "Practice", Version = "v1" });
+
+            var filePath = Path.Combine(AppContext.BaseDirectory, "Practice.xml");
+            e.IncludeXmlComments(filePath);
+
+            e.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+            e.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
+        return services;
+    }
+}

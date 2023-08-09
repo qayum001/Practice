@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Practice.Services.TokenService;
 using Practice.Services.UserService;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Practice.Controllers
 {
@@ -48,7 +49,10 @@ namespace Practice.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<TokenDto>> Register([FromBody] UserRegisterDto userRegisterDto)
         {
-            if (_registerCheckerService.IsEmailExists(userRegisterDto.Email).Result) return StatusCode(400, "Email already exists");
+            // .Result это супер плохо - синхронно ожидать асинхроммое, но я полагаю это случайно 
+            if (_registerCheckerService.IsEmailExists(userRegisterDto.Email).Result) 
+                // почему не " BadRequest("Email already exists") "
+                return StatusCode(400, "Email already exists");
 
             var token = new TokenDto()
             {
@@ -70,6 +74,7 @@ namespace Practice.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<TokenDto>> Login(LoginCredentials loginCredentials) 
         {
+            // если ты наследуешься от ControllerBase (не Controller) то по умолчанию контроллер не вызывается с не валидной моделью      
             if (!ModelState.IsValid) { return StatusCode(400); };
 
             if (!await _registerCheckerService.IsEmailExists(loginCredentials.Email)
@@ -92,10 +97,16 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> Logout() 
         {
+            // лучше что-то из этого 
+            // [FromHeader(Name = "Authorization")]
+            // Request.Headers.Authorization
+            // HttpContext.GetTokenAsync("access_token")
+            
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
 
             var isValid = await _tokenService.IsTokenValid(token);
 
+            // Unauthorized()
             if (!isValid) return StatusCode(401);
 
             await _authService.LogOut(token);
@@ -125,6 +136,7 @@ namespace Practice.Controllers
 
             if (!isValid) return StatusCode(401);
 
+            // токен парсится на этапе аутентификации запроса и все клеймы есть в this.User (HttpContext.User)
             var id = await _tokenService.GetGuid(token);
 
             var userDto = await _userService.GetUserProfileAsync(id);

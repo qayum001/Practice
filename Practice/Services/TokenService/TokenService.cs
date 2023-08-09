@@ -29,8 +29,17 @@ namespace Practice.Services.TokenService
 
             return Task.FromResult(Guid.Parse(res));
         }
+        
+        
         public async Task<bool> IsTokenValid(string token)
         {
+            /*
+             * Отзыв jwt неблагодарное дело, лучше сделать "refresh token rotation" и небольшое время жизни access token
+             * ну а если ты все же решил сделать так, то сохранять сам токен в ДБ излишне, существует jti - просто айдишник токена
+             *
+             * также и там и там стоит чистить протухшие токены какими-то джобами 
+             */
+
             var res = await _context.UsedToken.FirstOrDefaultAsync(e => e.Token == token);
 
             return res == null;
