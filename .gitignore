@@ -1,10 +1,4 @@
-
-.vs/Practice/FileContentIndex/c393de2d-ca03-4236-bbc1-d0b8961af7f3.vsidx
-.vs/Practice/FileContentIndex/c98d2a65-02d5-4f45-9e03-cdac5e29363c.vsidx
-.vs/Practice/FileContentIndex/dee8bb92-b82e-46ff-9b4b-68258ad2ef84.vsidx
-.vs/Practice/v17/.suo
-.vs/Practice/FileContentIndex/c9c8af8a-e1f9-4d9c-bc9e-60395a7d1972.vsidx
-.vs/Practice/v17/.suo
-.vs/Practice/v17/.suo
-.vs/Practice/v17/.suo
-Practice/bin/Debug/net7.0/Practice.dll
+.vs 
+.idea
+**/obj
+**/bin
