@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Practice.Data.Model;
+using System.Reflection.Emit;
 
 namespace Practice.Data;
 
@@ -72,6 +74,12 @@ public class AppDbContext : DbContext
         #region Comment
         modelBuilder.Entity<ChildCommentId>().HasKey(e => e.Id);
 
+        // забыл связь для родительского комментария 
+        modelBuilder.Entity<ChildCommentId>()
+            .HasOne<Comment>()
+            .WithMany()
+            .HasForeignKey(child => child.ParentId);
+
         modelBuilder.Entity<Comment>().HasKey(e => e.Id);
         modelBuilder.Entity<Comment>()
             .HasMany(e => e.ChildComments)
@@ -86,5 +94,39 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Like>().HasKey(e => e.Id);
 
         #endregion
+
+        /*
+         * писать все ef конфиги в одном методе громоздко, неудобно, 
+         * особенно когда ты захочешь все прописывать явно вручную.
+         * Так что используется "IEntityTypeConfiguration<>" для +- каждой сущности.
+         */
+
+        // такой конфиг можно применить вручную 
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        // или использовать все "IEntityTypeConfiguration<>" что быдут найдемы в переданной сборке (проекте) (Assembly) 
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
+}
+
+public class UserConfiguration : IEntityTypeConfiguration<User>
+{
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
+        // builder.HasKey(e => e.Id);
+        // builder
+        //     .HasMany(e => e.Posts)
+        //     .WithOne(e => e.User)
+        //     .HasForeignKey(e => e.UserId)
+        //     .IsRequired(false);
+        // builder
+        //     .HasMany(e => e.Comments)
+        //     .WithOne(e => e.User)
+        //     .HasForeignKey(e => e.UserId)
+        //     .IsRequired(false);
+        // builder
+        //     .HasMany(e => e.Likes)
+        //     .WithOne(e => e.User)
+        //     .HasForeignKey(e => e.UserId)
+        //     .IsRequired(false);
     }
 }
