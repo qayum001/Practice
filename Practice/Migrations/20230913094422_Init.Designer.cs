@@ -12,7 +12,7 @@ using Practice.Data;
 namespace Practice.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230803083834_Init")]
+    [Migration("20230913094422_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -147,7 +147,7 @@ namespace Practice.Migrations
                     b.Property<bool>("HasLIke")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ReadingTime")
+                    b.Property<int>("ReadTime")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")

@@ -50,7 +50,7 @@ namespace Practice.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReadingTime = table.Column<int>(type: "int", nullable: false),
+                    ReadTime = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HasLIke = table.Column<bool>(type: "bit", nullable: false),
