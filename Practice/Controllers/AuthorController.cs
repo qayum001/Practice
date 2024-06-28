@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Practice.Data.Dto;
 using Practice.Data.Model;
@@ -69,7 +70,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> CreatePost([FromBody] PostCreateDto postDto)  
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             var isTokenValid = await _tokenService.IsTokenValid(token);
             if (!isTokenValid) return StatusCode(401);
@@ -96,7 +97,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> EditePost([FromBody] PostEditDto postEditDto) 
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             var isValid = await _tokenService.IsTokenValid(token);
 
@@ -122,7 +123,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> DeletePost(Guid postId) 
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             var isValid = await _tokenService.IsTokenValid(token);
 

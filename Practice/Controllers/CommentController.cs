@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Practice.Data.Dto;
@@ -55,9 +56,9 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> Comment([FromBody] CommentCreateDto commentCreateDto, Guid id)
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
-            if(!await _tokenService.IsTokenValid(token)) return Unauthorized();
+            if (!await _tokenService.IsTokenValid(token)) return Unauthorized();
 
             var userId = await _tokenService.GetGuid(token);
 
@@ -80,7 +81,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> EditComment(Guid id, string editText) 
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             if (!await _tokenService.IsTokenValid(token)) return Unauthorized();
 
@@ -104,7 +105,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> DeleteComment(Guid id) 
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             if (!await _tokenService.IsTokenValid(token)) return Unauthorized();
 

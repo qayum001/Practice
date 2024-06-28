@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Practice.Data.Dto;
 using Practice.Data.Model;
@@ -98,7 +99,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> Like(Guid id)
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             if (!await _tokenService.IsTokenValid(token)) return Unauthorized();
 
@@ -123,7 +124,7 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> Unlike(Guid id)
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
 
             if (!await _tokenService.IsTokenValid(token)) return Unauthorized();
 

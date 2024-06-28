@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Practice.Services.TokenService;
 using Practice.Services.UserService;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Practice.Controllers
 {
@@ -92,8 +93,8 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> Logout() 
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
-
+            var token = await HttpContext.GetTokenAsync("access_token");
+            
             var isValid = await _tokenService.IsTokenValid(token);
 
             if (!isValid) return StatusCode(401);
@@ -120,7 +121,9 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<UserDto>> GetProfile() 
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var token = await HttpContext.GetTokenAsync("access_token");
+
             var isValid = await _tokenService.IsTokenValid(token);
 
             if (!isValid) return StatusCode(401);
@@ -143,7 +146,8 @@ namespace Practice.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> EditProfile([FromBody] EditUserDto editUserDto)
         {
-            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var token = await HttpContext.GetTokenAsync("access_token");
+            
             var isValid = await _tokenService.IsTokenValid(token);
 
             if (!isValid) return StatusCode(401);
