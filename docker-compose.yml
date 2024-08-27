@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  practice:
+    image: ${DOCKER_REGISTRY-}practice
+    build:
+      context: .
+      dockerfile: Practice/Dockerfile
+
+  practice.db:
+    image: postgres
+    container_name: practice.db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: qayum
+      POSTGRES_PASSWORD: qayum
+      POSTGRES_DB: practice
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+    driver: local

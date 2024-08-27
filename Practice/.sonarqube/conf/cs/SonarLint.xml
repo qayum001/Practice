@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnalysisInput>
+  <Settings>
+    <Setting>
+      <Key>sonar.cs.ignoreHeaderComments</Key>
+      <Value>true</Value>
+    </Setting>
+    <Setting>
+      <Key>sonar.cs.analyzeGeneratedCode</Key>
+      <Value>false</Value>
+    </Setting>
+    <Setting>
+      <Key>sonar.cs.file.suffixes</Key>
+      <Value>.cs,.razor</Value>
+    </Setting>
+    <Setting>
+      <Key>sonar.cs.analyzeRazorCode</Key>
+      <Value>true</Value>
+    </Setting>
+    <Setting>
+      <Key>sonar.cs.roslyn.ignoreIssues</Key>
+      <Value>false</Value>
+    </Setting>
+  </Settings>
+  <Rules>
+    <Rule>
+      <Key>S5659</Key>
+    </Rule>
+    <Rule>
+      <Key>S6932</Key>
+    </Rule>
+  </Rules>
+  <Files>
+  </Files>
+</AnalysisInput>

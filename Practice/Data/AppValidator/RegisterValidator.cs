@@ -37,10 +37,6 @@ namespace Practice.Data.AppValidator
                 .NotEmpty()
                 .MinimumLength(7)
                 .MaximumLength(11);
-
-            RuleFor(x => x.Gender)
-                .NotEmpty()
-                .NotNull();
         }
     }
 }

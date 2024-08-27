@@ -73,17 +73,14 @@ builder.Services.AddSwaggerGen(e =>
 });
 
 //Auto Mapper
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<AppMapper>();
-});
+builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 //Db
 var connection = builder.Configuration["ConnectionString:DefaultConnection"];
-builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(connection));
+builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(connection));
 
 //Services
 #region Service

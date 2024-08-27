@@ -1,0 +1,6 @@
+projectKey=aspnet_cs
+serverUrl=http://localhost:9631
+serverVersion=10.6.0.92116
+dashboardUrl=http://localhost:9631/dashboard?id=aspnet_cs
+ceTaskId=1e7c0ff6-6f36-4ddc-941d-444300c39ced
+ceTaskUrl=http://localhost:9631/api/ce/task?id=1e7c0ff6-6f36-4ddc-941d-444300c39ced

@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Practice</name>
+    </assembly>
+    <members>
+        <member name="M:Practice.Controllers.AuthorController.AuthorsList">
+            <summary>
+            Get Author List
+            </summary>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.GetConcreteAuthor(System.Guid)">
+            <summary>
+            Get author by Id
+            </summary>
+            <returns>AuthorDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.CreatePost(Practice.Data.Dto.PostCreateDto)">
+            <summary>
+            Crete New Post
+            </summary>
+            <param name="postDto"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.EditePost(Practice.Data.Dto.PostEditDto)">
+            <summary>
+            Edite post
+            </summary>
+            <param name="postEditDto"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.AuthorController.DeletePost(System.Guid)">
+            <summary>
+            Delete post
+            </summary>
+            <param name="postId"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.CommentController.GetComment(System.Guid)">
+            <summary>
+            Get all nested comments
+            </summary>
+            <param name="id"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.CommentController.Comment(Practice.Data.Dto.CommentCreateDto,System.Guid)">
+            <summary>
+            Add a comment to a concrete post
+            </summary>
+            <param name="commentCreateDto"></param>
+            <param name="id"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.CommentController.EditComment(System.Guid,System.String)">
+            <summary>
+            Edit concrete post
+            </summary>
+            <param name="id"></param>
+            <param name="editText"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.CommentController.DeleteComment(System.Guid)">
+            <summary>
+            Delete concrete comment
+            </summary>
+            <param name="id"></param>
+            <returns>Responce</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.GetPostsList(System.Collections.Generic.List{System.Guid},System.String,System.Int32,System.Int32,Practice.Data.Model.Sort,System.Int32,System.Int32)">
+            <summary>
+            Get post list
+            </summary>
+            <returns>PostDto List</returns>
+            <param name="tagIdlist">Search by TagList</param>
+            <param name="authorName">Search by author name</param>
+            <param name="minReadTime">Set min read time in minutes</param>
+            <param name="maxReadTime">Set max read time in minutes</param>
+            <param name="sort">Set sort type</param>
+            <param name="page">Set page</param>
+            <param name="postCount">Set posts count in page</param>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.GetConcretePost(System.Guid)">
+            <summary>
+            Get post
+            </summary>
+            <returns>PostDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.Like(System.Guid)">
+            <summary>
+            Like post
+            </summary>
+            <returns>PostDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.PostController.Unlike(System.Guid)">
+            <summary>
+            DisLike post
+            </summary>
+            <returns>PostDto</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="404">Not Found</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.TagController.GetTag">
+             <summary>
+            Get tag list
+             </summary>
+             <response  code="200">Success</response>
+             <response  code="400">Bad Request</response>
+             <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.Register(Practice.Data.Dto.UserRegisterDto)">
+            <summary>
+            Register new user
+            </summary>
+            <param name="userRegisterDto"></param>
+            <returns>A string token</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.Login(Practice.Data.Dto.LoginCredentials)">
+            <summary>
+            Log in to the system
+            </summary>
+            <param name="loginCredentials"></param>
+            <returns>A string token</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Email or password is incorrect</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.Logout">
+            <summary>
+            Log out system user
+            </summary>
+            <returns>Response</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.GetProfile">
+            <summary>
+            Get profile
+            </summary>
+            <returns>Response</returns>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Practice.Controllers.UserController.EditProfile(Practice.Data.Dto.EditUserDto)">
+            <summary>
+            Edit profile
+            </summary>
+            <response  code="200">Success</response>
+            <response  code="400">Bad Request</response>
+            <response  code="401">Unauthorized</response>
+            <response  code="500">Internal Server Error</response>
+        </member>
+        <member name="T:Practice.Migrations.Init">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.Init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.Init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Practice.Migrations.Init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

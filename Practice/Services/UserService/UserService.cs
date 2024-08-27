@@ -24,11 +24,11 @@ namespace Practice.Services.UserService
         {
             var user = await _context.User.FirstAsync(e => e.Id == id);
 
-            user.Email = editUserDto.Email.IsNullOrEmpty() ? user.Email : editUserDto.Email;
-            user.FullName = editUserDto.FullName.IsNullOrEmpty() ? user.FullName : editUserDto.FullName;
+            user.Email = String.IsNullOrEmpty(editUserDto.Email) ? user.Email : editUserDto.Email;
+            user.FullName = String.IsNullOrEmpty(editUserDto.FullName) ? user.FullName : editUserDto.FullName;
             user.BirthDay = editUserDto.BirthDay;
             user.Gender = editUserDto.Gender;
-            user.PhoneNumber = editUserDto.Phone.IsNullOrEmpty() ? user.PhoneNumber : editUserDto.Phone;
+            user.PhoneNumber = String.IsNullOrEmpty(editUserDto.Phone) ? user.PhoneNumber : editUserDto.Phone;
 
             await _context.SaveChangesAsync();
 
