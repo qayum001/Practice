@@ -25,14 +25,19 @@ namespace Practice.Services.PostService
 
             if(pagePosts == null) return null;
 
+            return await MapPostsToDtoListAsync(pagePosts);
+        }
+
+        private async Task<List<PostDto>> MapPostsToDtoListAsync(IEnumerable<Post> posts)
+        {
             var dtoList = new List<PostDto>();
 
-            foreach (var post in pagePosts)
+            foreach (var post in posts)
             {
-                var postDto = _mapper.Map<PostDto>(post)
-;
-                postDto.TagList = await GetTagDtoList(post.Tags.ToList());
-                postDto.AuthorName = _context.User.First(e => e.Id == post.UserId).FullName;
+                var postDto = _mapper.Map<PostDto>(post);
+
+                postDto.TagList = await GetTagDtoList([.. post.Tags]);
+                postDto.AuthorName = post.User.FullName;
 
                 dtoList.Add(postDto);
             }
@@ -92,6 +97,15 @@ namespace Practice.Services.PostService
 
             return postDtoWC;
         }
+        private async Task<PostWithCommentsDto> MapPostToDto(Post post, Guid id, List<CommentDto> commentsList)
+        {
+            var postDtoWC = _mapper.Map<PostWithCommentsDto>(post);
+            postDtoWC.PostId = id;
+            postDtoWC.TagList = await GetTagDtoList([.. post.Tags]);
+            postDtoWC.CommentList = commentsList;
+
+            return postDtoWC;
+        }
 
         private async Task<List<CommentDto>> GetCommentsList(IEnumerable<Comment> comments)
         {
@@ -111,16 +125,6 @@ namespace Practice.Services.PostService
             }
 
             return commentsList;
-        }
-
-        private async Task<PostWithCommentsDto> MapPostToDto(Post post, Guid id, List<CommentDto> commentsList)
-        {
-            var postDtoWC = _mapper.Map<PostWithCommentsDto>(post);
-            postDtoWC.PostId = id;
-            postDtoWC.TagList = await GetTagDtoList([.. post.Tags]);
-            postDtoWC.CommentList = commentsList;
-
-            return postDtoWC;
         }
 
         private async Task<List<Post>?> GetPagePosts(Pagination pagination)
