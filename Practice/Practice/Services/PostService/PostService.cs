@@ -155,13 +155,30 @@ namespace Practice.Services.PostService
 
         public async Task<Response> LikePost(Guid userId, Guid postId)
         {
-            var post = await _context.Post
-                .Include(e => e.Likes)
-                .FirstOrDefaultAsync(e => e.Id == postId);
-
             var response = new Response();
 
-            if (post == null)
+            var like = await _context.Like
+                .FirstOrDefaultAsync(e => e.UserId == userId && e.PostId == postId);
+
+            if (like is not null)
+            {
+                response.Stasus = "Fail";
+                response.Message = "Already liked";
+
+                return response;
+            }
+
+            return await AddLikeToPostAsync(userId, postId);
+        }
+
+        private async Task<Response> AddLikeToPostAsync(Guid userId, Guid postId)
+        {
+            var response = new Response();
+
+            var post = await _context.Post
+                .FirstOrDefaultAsync(e => e.Id == postId);
+
+            if (post is null)
             {
                 response.Stasus = "Fail";
                 response.Message = "Post not found";
@@ -170,31 +187,27 @@ namespace Practice.Services.PostService
             }
 
             var user = await _context.User
-                .Include(e => e.Likes)
-                .FirstAsync(e => e.Id == userId);
+                .FirstOrDefaultAsync(e => e.Id == userId);
 
-            var LikedPost = user.Likes.FirstOrDefault(e => e.PostId == postId);
-
-            if (LikedPost != null)
+            if (user is null)
             {
                 response.Stasus = "Fail";
-                response.Message = "Already liked";
+                response.Message = "User not found";
 
                 return response;
             }
 
             var like = new Like
             {
-                UserId = userId,
-                PostId = postId,
+                UserId = user.Id,
+                PostId = post.Id,
                 CreateTime = DateTime.Now,
                 User = user,
                 Post = post,
             };
 
-            user.Likes.Add(like);
-            post.Likes.Add(like);
-            
+            _context.Like.Add(like);
+
             await _context.SaveChangesAsync();
 
             response.Stasus = "Success";
