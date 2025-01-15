@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Practice.Services.PostService
 {
@@ -85,9 +86,18 @@ namespace Practice.Services.PostService
 
             if (post == null) return null;
 
+            var commentsList = await GetCommentsList(post.Comments);
+
+            var postDtoWC = await MapPostToDto(post, id, commentsList);
+
+            return postDtoWC;
+        }
+
+        private async Task<List<CommentDto>> GetCommentsList(IEnumerable<Comment> comments)
+        {
             var commentsList = new List<CommentDto>();
 
-            foreach (var comment in post.Comments)
+            foreach (var comment in comments)
             {
                 var subComments = await _context.Comment.Include(e => e.ChildComments).FirstAsync(e => e.Id == comment.Id);
                 var subCommentsCount = subComments.ChildComments == null ? 0 : subComments.ChildComments.Count;
@@ -95,16 +105,19 @@ namespace Practice.Services.PostService
                 if (comment.ParentCommentId != null) continue;
 
                 var commentDto = _mapper.Map<CommentDto>(comment);
-
                 commentDto.SubCommentsCount = subCommentsCount;
 
                 commentsList.Add(commentDto);
             }
 
-            var postDtoWC = _mapper.Map<PostWithCommentsDto>(post);
+            return commentsList;
+        }
 
+        private async Task<PostWithCommentsDto> MapPostToDto(Post post, Guid id, List<CommentDto> commentsList)
+        {
+            var postDtoWC = _mapper.Map<PostWithCommentsDto>(post);
             postDtoWC.PostId = id;
-            postDtoWC.TagList = await GetTagDtoList(post.Tags.ToList());
+            postDtoWC.TagList = await GetTagDtoList([.. post.Tags]);
             postDtoWC.CommentList = commentsList;
 
             return postDtoWC;

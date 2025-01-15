@@ -12,7 +12,7 @@ namespace Practice.Tests
         #region GetPostDtoById()
         //Bad Date Test
         [TestMethod]
-        public async Task GetPostDtoById_PostWithoutTagsCommentsOrLikes_ReturnsPostWithEmptyCollections()
+        public async Task GetPostDtoById_PostWithoutTagsAndComments_ReturnsPostWithEmptyCollections()
         {
             // Arrange
             var serviceProvider = ServiceProviderFactory.GetServiceProvider();
@@ -30,7 +30,6 @@ namespace Practice.Tests
             {
                 Id = postId,
                 Title = "Test Post",
-                Likes = new List<Like> { new Like { Id = Guid.NewGuid() } },
                 User = new User { Id = userId, FullName = "Test User", Password = "appa", Email = "Ad", PhoneNumber = "dd" },
                 Text = "test",
             };
@@ -44,6 +43,7 @@ namespace Practice.Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(postId, result.PostId);
+            Assert.AreEqual(0, post.Likes.Count);
             Assert.AreEqual(0, result.TagList.Count);
             Assert.AreEqual(0, result.CommentList.Count);
         }
