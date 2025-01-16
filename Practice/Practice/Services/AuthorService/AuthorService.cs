@@ -131,7 +131,7 @@ namespace Practice.Services.AuthorService
 
             post.Title = string.IsNullOrEmpty(postEditDto.Title) ? post.Title : postEditDto.Title;
             post.Text = string.IsNullOrEmpty(postEditDto.Text) ? post.Text : postEditDto.Text;
-            post.ReadTime = postEditDto.ReadTime == 0 ? post.ReadTime : postEditDto.ReadTime;     //do not save _context
+            post.ReadTime = postEditDto.ReadTime == 0 ? post.ReadTime : postEditDto.ReadTime;
             await _tagService.AddTagsToPost(post, postEditDto.AddTagGuidList);
             await _tagService.DeleteTagsFromPost(post, postEditDto.DeleteTagGuidList);
 
