@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Practice.Data;
 using Practice.Data.Dto;
 using Practice.Data.Model;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Practice.Services.PostService
@@ -257,39 +258,30 @@ namespace Practice.Services.PostService
             return Task.FromResult(res);
         }
 
-        private Task<List<Post>> SortSwitch(Sort sort) => sort switch
+        private async Task<List<Post>> SortSwitch(Sort sort)
         {
-            Sort.CreateAsc => Task.FromResult(_context.Post
+            var postList = _context.Post
                 .Include(e => e.Tags)
                 .Include(e => e.Likes)
-                .Include(e => e.User)
-                .OrderBy(e => e.Created)
-                .ToList()),
+                .Include(e => e.User);
 
-            Sort.CreateDesc => Task.FromResult(_context.Post
-                .Include(e => e.Tags)
-                .Include(e => e.User)
-                .Include(e => e.Likes)
-                .OrderByDescending(e => e.Created)
-                .ToList()),
+            switch (sort)
+            {
+                case Sort.CreateAsc:
+                    return await postList.OrderBy(e => e.Created).ToListAsync();
 
-            Sort.LikeAsc => Task.FromResult(_context.Post
-                .Include(e => e.Tags)
-                .Include(e => e.Likes)
-                .Include(e => e.User)
-                .OrderBy(e => e.Likes.Count)
-                .ToList()),
+                case Sort.CreateDesc:
+                    return await postList.OrderByDescending(e => e.Created).ToListAsync();
 
-            Sort.LikeDesc => Task.FromResult(_context.Post
-                .Include(e => e.Tags)
-                .Include(e => e.Likes)
-                .Include(e => e.User)
-                .OrderByDescending(e => e.Likes.Count)
-                .ToList()),
+                case Sort.LikeAsc:
+                    return await postList.OrderBy(e => e.Likes.Count).ToListAsync();
+                     
+                case Sort.LikeDesc:
+                    return await postList.OrderByDescending(e => e.Likes.Count).ToListAsync();
+            };
 
-            _ => throw new ArgumentException(message: "not implemented request", paramName: nameof(sort))
-        };
-
+            return await postList.ToListAsync();
+        }
         private Task<List<Post>> ReadTimeSort(List<Post> postList, int min, int max)
         {
 
