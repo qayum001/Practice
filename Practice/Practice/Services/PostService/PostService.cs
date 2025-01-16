@@ -52,14 +52,9 @@ namespace Practice.Services.PostService
                 .Include(e => e.Likes)
                 .FirstOrDefaultAsync(e => e.Id == postId);
 
-            var response = new Response();
-
             if (post == null)
             {
-                response.Stasus = "Fail";
-                response.Message = "Post not found";
-
-                return response;
+                return Response.Create("Fail", "Post not found");
             }
 
             var user = await _context.User
@@ -74,11 +69,7 @@ namespace Practice.Services.PostService
 
             await _context.SaveChangesAsync();
 
-
-            response.Stasus = "Success";
-            response.Message = "Like has been removed";
-
-            return response;
+            return Response.Create("Success", "Like has been removed");
         }
 
         public async Task<PostWithCommentsDto?> GetPostDtoById(Guid id)
@@ -163,10 +154,7 @@ namespace Practice.Services.PostService
 
             if (like is not null)
             {
-                response.Stasus = "Fail";
-                response.Message = "Already liked";
-
-                return response;
+                return Response.Create("Fail", "Already liked");
             }
 
             return await AddLikeToPostAsync(userId, postId);
@@ -174,17 +162,12 @@ namespace Practice.Services.PostService
 
         private async Task<Response> AddLikeToPostAsync(Guid userId, Guid postId)
         {
-            var response = new Response();
-
             var post = await _context.Post
                 .FirstOrDefaultAsync(e => e.Id == postId);
 
             if (post is null)
             {
-                response.Stasus = "Fail";
-                response.Message = "Post not found";
-
-                return response;
+                return Response.Create("Fail", "Post not found");
             }
 
             var user = await _context.User
@@ -192,10 +175,7 @@ namespace Practice.Services.PostService
 
             if (user is null)
             {
-                response.Stasus = "Fail";
-                response.Message = "User not found";
-
-                return response;
+                return Response.Create("Fail", "User not found");
             }
 
             var like = new Like
@@ -211,10 +191,7 @@ namespace Practice.Services.PostService
 
             await _context.SaveChangesAsync();
 
-            response.Stasus = "Success";
-            response.Message = "Post has been liked";
-
-            return response;
+            return Response.Create("Success", "Post has been liked");
         }
 
         private static Task<List<TagDto>> GetTagDtoList(List<Tag> tags)

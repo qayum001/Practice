@@ -60,11 +60,7 @@ namespace Practice.Services.AuthorService
 
             await _context.SaveChangesAsync();
 
-            var responce = new Response()
-            {
-                Stasus = "Created",
-                Message = $"Created post {postDto.Title}"
-            };
+            var responce = Response.Create("Created", $"Created post {postDto.Title}");
 
             return responce;
         }
@@ -93,24 +89,17 @@ namespace Practice.Services.AuthorService
         {
             var post = await _context.Post.FirstAsync(e => e.Id == postId);
 
-            var respose = new Response();
-
             if(post.UserId != userId)
             {
-                respose.Stasus = "Unsuccess deleting";
-                respose.Message = "User is not author of this post";
-
-                return respose;
+                return Response.Create("Unsuccess deleting",
+                    "User is not author of this post");
             }
 
             _context.Post.Remove(post);
 
             await _context.SaveChangesAsync();
 
-            respose.Stasus = "Success";
-            respose.Message = "Post has beed deleted";
-
-            return respose;
+            return Response.Create("Success", "Post has beed deleted");
         }
 
         public async Task<Response> EditPost(Guid userId, PostEditDto postEditDto)
@@ -119,14 +108,10 @@ namespace Practice.Services.AuthorService
                 .Include(e => e.Tags)
                 .FirstAsync(e => e.Id == postEditDto.PostId);
 
-            var respose = new Response();
-
             if (post.UserId != userId)
             {
-                respose.Stasus = "Unsuccess editing";
-                respose.Message = "User is not author of this post";
-
-                return respose;
+                return Response.Create("Unsuccess editing",
+                    "User is not author of this post");
             }
 
             post.Title = string.IsNullOrEmpty(postEditDto.Title) ? post.Title : postEditDto.Title;
@@ -137,10 +122,7 @@ namespace Practice.Services.AuthorService
 
             await _context.SaveChangesAsync();
 
-            respose.Stasus = "Success";
-            respose.Message = "Post has been edited";
-
-            return respose;
+            return Response.Create("Success", "Post has been edited");
         }
     }
 }

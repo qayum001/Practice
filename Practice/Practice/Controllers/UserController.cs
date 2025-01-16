@@ -101,12 +101,7 @@ namespace Practice.Controllers
 
             await _authService.LogOut(token);
 
-            return Ok(new Response()
-            {
-                Stasus = "Log out",
-                Message = "your token are no valid now"
-            });
-            
+            return Ok(Data.Model.Response.Create("Log out", "your token are no valid now"));
         }
 
         /// <summary>

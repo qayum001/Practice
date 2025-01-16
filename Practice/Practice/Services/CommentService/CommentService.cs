@@ -22,7 +22,7 @@ namespace Practice.Services.CommentService
         {
             var comment = await CreateComment(userId, postId, commentCreateDto);
 
-            if(comment == null) return new Response { Stasus = "Fail", Message = "Post not found"};
+            if (comment == null) return Response.Create("Fail", "Post not found");
             
             await _context.Comment.AddAsync(comment);
 
@@ -39,16 +39,16 @@ namespace Practice.Services.CommentService
             
             await _context.SaveChangesAsync();
 
-            return new Response { Stasus = "Success", Message = "Comment added" };
+            return Response.Create("Success", "Comment added");
         }
 
         public async Task<Response> DeleteComment(Guid commentId, Guid userId)
         {
             var comment = await _context.Comment.FirstOrDefaultAsync(c => c.Id == commentId);
 
-            if (comment == null) return new Response { Stasus = "Fail", Message = "Not Found" };
+            if (comment == null) return Response.Create("Fail", "Not Found");
 
-            if (comment.UserId != userId) return new Response { Stasus = "Fail", Message = "User not allowed" };
+            if (comment.UserId != userId) return Response.Create("Fail", "User not allowed");
 
             comment.DelitedDate = DateTime.UtcNow;
             comment.AuthorName = "[Comment deleted]";
@@ -56,27 +56,27 @@ namespace Practice.Services.CommentService
 
             await _context.SaveChangesAsync();
 
-            return new Response { Stasus = "Success", Message = "CommentDeleted"};
+            return Response.Create("Success", "CommentDeleted");
         }
 
         public async Task<Response> EditComment(Guid commentId, Guid userId, string editedText)
         {
             var comment = await _context.Comment.FindAsync(commentId);
 
-            if (comment == null) return new Response { Stasus = "Fail", Message = "Comment not found" };
+            if (comment == null) return Response.Create("Fail", "Comment not found");
 
             var isDeleted = comment.DelitedDate.Year != 1;
 
-            if (isDeleted) return new Response { Stasus = "Fail", Message = "Comment Deleted" };
+            if (isDeleted) return Response.Create("Fail", "Comment Deleted");
 
-            if (comment.UserId != userId) return new Response { Stasus = "Fail", Message = "User not allowed" };
+            if (comment.UserId != userId) return Response.Create("Fail", "User not allowed");
 
             comment.Text = editedText;
             comment.ModifiedTime = DateTime.Now;
 
             await _context.SaveChangesAsync();
 
-            return new Response { Stasus = "Succes", Message = "Comment edited" };
+            return Response.Create("Success", "Comment edited");
         }
 
         public async Task<List<CommentDto>?> GetComments(Guid id)

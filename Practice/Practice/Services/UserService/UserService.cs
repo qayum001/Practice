@@ -32,13 +32,7 @@ namespace Practice.Services.UserService
 
             await _context.SaveChangesAsync();
 
-            var res = new Response
-            {
-                Stasus = "Success",
-                Message = "Profile Edited"
-            };
-
-            return res;
+            return Response.Create("Success", "Profile Edited");
         }
 
         public async Task<UserDto> GetUserProfileAsync(Guid id)
